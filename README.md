@@ -16,5 +16,11 @@ Repo para hacer seguimiento a curso de ms con springboot
   * Tolerancia a fallos para evitar error en cascada, crea caminos alternativos
   * Balanceo de cargas (Ribbon)
   * Configuración centralizada (Spring cloud config) para centralizar configuraciones de cada ms
-  * Reduccion de costo
+  * Reduccion de costos
+
+## 5 [Actualizacion estrucutura para seleccionar las dependencias sprinboot](https://www.udemy.com/course/microservicios-con-spring-boot-y-spring-cloud/learn/lecture/15372910#overview)
+
+* Antes  =====> Ahora
+* DevTools ===> Developer Tools
+* Web ======> Web > Spring web starter
 
