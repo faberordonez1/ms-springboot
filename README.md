@@ -6,7 +6,7 @@ Repo para hacer seguimiento a curso de ms con springboot
 
 ### 4 [Instalación SpringBoot y configuración workspace](https://www.udemy.com/course/microservicios-con-spring-boot-y-spring-cloud/learn/lecture/15372904#overview)
 
-  *    Maven viene embebido en eclipse
+  *    Maven viene embebido en Eclipse
 
 ### 5 - [Introduccion MS](https://www.udemy.com/course/microservicios-con-spring-boot-y-spring-cloud/learn/lecture/15372908#overview) 
 
