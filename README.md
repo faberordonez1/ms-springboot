@@ -142,7 +142,7 @@ public class ProductoController {
 }
 ```
 
-### [Probando API en Postman](https://www.udemy.com/course/microservicios-con-spring-boot-y-spring-cloud/learn/lecture/15372926#overview)
+### 12 [Probando API en Postman](https://www.udemy.com/course/microservicios-con-spring-boot-y-spring-cloud/learn/lecture/15372926#overview)
 
 - En src > resource se crea un nueo archivo import.sql, sera para insertar datos de prueba
 - En el aplication.properties activar el parametro spring.sql.init.mode=always
@@ -162,14 +162,8 @@ INSERT INTO productos (nombre,precio,create_at) VALUES ('Reebok',300,NOW())
 -- Se omite id porque es autoincremental
 
 ```
+### 13 [Creando MS Items](https://www.udemy.com/course/microservicios-con-spring-boot-y-spring-cloud/learn/lecture/15372928#questions)
 
-
-
-
-
-      
-  
- 
-
+ - Se crea un nuevo ms
 
 
