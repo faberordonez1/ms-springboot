@@ -81,7 +81,7 @@ En el pom.xml se deben tener las dependencias
 Dentro del package principal  com.app.productos
  - Click Derecho, > new package > Name = com.app.productos.models.entity
 
-En el nuevo package new class > nombre = Producto
+En el nuevo package new class > nombre = Producto //Enlazar file Producto implements Serializable
  - En la nueva clase se agrega la notacion de @Entity y @Table PPARA USAR JPA
  - Se crean 4 variables con sus repectivos getter and setter (click derecho source > generate getter)
  - Se indica cual es ka key primaria
@@ -90,6 +90,60 @@ En el nuevo package new class > nombre = Producto
  - Generate serial versionId
 
 ### 9 [Creando Repositorio JPA productos](https://www.udemy.com/course/microservicios-con-spring-boot-y-spring-cloud/learn/lecture/15372920#overview)
+
+- Esta interface ya tiene construido los metodos de CRUD, en la doc se puede ver la estructura [Doc](https://docs.spring.io/spring-data/jpa/reference/repositories/core-concepts.html)
+- Usando [@Query](https://docs.spring.io/spring-data/jpa/reference/jpa/query-methods.html#jpa.query-methods.at-query) para crear consultas SQL  custom
+- Se crea la clase implementando la interface JpaRepository o CrudRepository, la diferencia JPA extiende de CrudRepository, pero agrega propiedades adicionales como paginador etc.
+- En el package orincipal creamos un nuevo packe dentro de model nombre =com.app.productos.models.dao
+- En el nuevo package se crea una nueva interface ProductoDao que extiende de CrudRepository, como primerargumento se pasa la entity creada en el punto anterior
+
+### 10 [Creando Service para Productos](https://www.udemy.com/course/microservicios-con-spring-boot-y-spring-cloud/learn/lecture/15372922#overview)
+
+- Se crea un nuevo package nombre =com.app.productos.models.service
+- En el nuevo package se crea una interface IProductoService y se implementan los sigtes metodos
+	- findAll()
+ 	- findById(Long id)
+- En el mismo package, se crea una clase IProductoServiceImpl y se agrega el @Service
+	- A los métodos se le agrega @Transactional(readOnly = true) para que estE sincronzado con BD, SE IMPORTA de spring framwork
+	- Se inyecta el ProductoDao @Autowired y se usa en los métodos
+
+### 11 [Controlador Rest Productos](https://www.udemy.com/course/microservicios-con-spring-boot-y-spring-cloud/learn/lecture/15372924#overview)
+
+- Se crea un nuevo paquete controllers y dentro de este se crea la Clase ProductoController y se agrega el decorador @RestController
+  	- Se inyecta productoService CON @Autowired
+  	- Se crean 2 metodos get, para listar todos y listar por id
+
+``` java
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.app.productos.models.entity.Producto;
+import com.app.productos.models.service.IProductoService;
+
+@RestController
+public class ProductoController {
+	
+	@Autowired
+	private IProductoService productoService;
+	
+	@GetMapping("/listar")
+	public List<Producto> listar(){
+		return this.productoService.findAll();
+	}
+	
+	@GetMapping("/listar/{id}")
+	public Producto detalle(@PathVariable Long id){//PathVariable es para obtener el Id en la URL
+		return this.productoService.findById(id);
+	}
+
+}
+```
+
+  
+
+      
   
  
 
