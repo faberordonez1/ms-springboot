@@ -109,9 +109,10 @@ En el nuevo package new class > nombre = Producto //Enlazar file Producto implem
 
 ### 11 [Controlador Rest Productos](https://www.udemy.com/course/microservicios-con-spring-boot-y-spring-cloud/learn/lecture/15372924#overview)
 
-- Se crea un nuevo paquete controllers y dentro de este se crea la Clase ProductoController y se agrega el decorador @RestController
+- Se crea un nuevo paquete controllers y dentro de este se crea la Clase ProductoController y se agrega el decorador @RestController (Transforma a JSON lo que retorna los metodos handler findAll) 
   	- Se inyecta productoService CON @Autowired
   	- Se crean 2 metodos get, para listar todos y listar por id
+  	- Con esto ya se puede ver la API en el navegador [local](http://localhost:8001/)
 
 ``` java
 import org.springframework.beans.factory.annotation.Autowired;
@@ -122,11 +123,11 @@ import org.springframework.web.bind.annotation.RestController;
 import com.app.productos.models.entity.Producto;
 import com.app.productos.models.service.IProductoService;
 
-@RestController
+@RestController //Transforma a JSON lo que retorna los metodos handler findAll
 public class ProductoController {
 	
 	@Autowired
-	private IProductoService productoService;
+	private IProductoService productoService;//Tipo a convertir a JSON
 	
 	@GetMapping("/listar")
 	public List<Producto> listar(){
@@ -141,7 +142,30 @@ public class ProductoController {
 }
 ```
 
-  
+### [Probando API en Postman](https://www.udemy.com/course/microservicios-con-spring-boot-y-spring-cloud/learn/lecture/15372926#overview)
+
+- En src > resource se crea un nueo archivo import.sql, sera para insertar datos de prueba
+- En el aplication.properties activar el parametro spring.sql.init.mode=always
+- Al lentar de nuevo el MS, se auto importa el script, debe tener el nombre indicado 
+
+``` sql
+INSERT INTO productos (nombre,precio,create_at) VALUES ('Panasonic',800, NOW());
+INSERT INTO productos (nombre,precio,create_at) VALUES ('Sony',700, NOW());
+INSERT INTO productos (nombre,precio,create_at) VALUES ('Apple',1000, NOW());
+INSERT INTO productos (nombre,precio,create_at) VALUES ('Sony Notebook',1000, NOW());
+INSERT INTO productos (nombre,precio,create_at) VALUES ('Hewlett-Packard',500, NOW());
+INSERT INTO productos (nombre,precio,create_at) VALUES ('Bianchi',600, NOW());
+INSERT INTO productos (nombre,precio,create_at) VALUES ('Nike',100, NOW());
+INSERT INTO productos (nombre,precio,create_at) VALUES ('Adidas',200,NOW())
+INSERT INTO productos (nombre,precio,create_at) VALUES ('Reebok',300,NOW())
+-- create_at debe ser igual a @Column de la clase Producto
+-- Se omite id porque es autoincremental
+
+```
+
+
+
+
 
       
   
