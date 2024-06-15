@@ -311,20 +311,37 @@ public interface ItemService {
 }
 ```
 
- - Se crea la clase que implementa la interface anterior [ItemServiceImpl](/ms-item/src/main/java/com/app/item/model/service/ItemServiceImpl.java)
-	 - Se agrega el @Service (Fachada para acceder a los datos)
- 	 - Se inyecta el RestTemplate con @Autowired
+ ### 15 [Implementando service con rest template](https://www.udemy.com/course/microservicios-con-spring-boot-y-spring-cloud/learn/lecture/15372934#questions)
+
+#### Se crea la clase  [ItemServiceImpl](/ms-item/src/main/java/com/app/item/model/service/ItemServiceImpl.java) que implementa la interface anterior   
+- Se agrega el @Service (Fachada para acceder a los datos)  
+- Se inyecta el RestTemplate con @Autowired  
+#### Implementacion metodo findAll  
+- Usando resttemplate.getForObject obtenemos los datos del otro ms, esta funcion recibe dos argumentos, la url y el tipo de dato que deseamos obtener  
+- Para asignar el valor a productos de debe parsear a Lista de productos el array emitido por clienteRest, lo hacemos con  Arrays.asList(arrayRecibido);
+- Para hacer el return de debe parsear a Lista de productos a  lista de items lo hacemos con api stream de java 8  
+
+#### Implementacion metodo findById
+- Se crea un HashMap con el id, para enviarlo al otro ms
+- Se hace el getForObject de resttemplate pasando el hashmap como tercer parametro
+- Se hace el parseo de producto a item
+- Se hace el return del resultado del parseo
 
 ```java
 package com.app.item.model.service;
 
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import com.app.item.model.Item;
+import com.app.item.model.Producto;
 
 @Service
 public class ItemServiceImpl implements ItemService {
@@ -333,21 +350,26 @@ public class ItemServiceImpl implements ItemService {
 	private RestTemplate clienteRest;
 
 	@Override
-	public List<Item> findAll() {
-		// TODO Auto-generated method stub
-		return null;
+	public List<Item> findAll() {//Parseo de array a lista de productos.🟦 url y el tipo de dato que deseamos obtener ([]Producto)
+		List<Producto> productos = Arrays.asList(clienteRest.getForObject("http://localhost:8001/listar", Producto[].class));
+	    // Transforma lista de productos a lista de items.
+		return productos.stream().map( p -> new Item(p,1)).collect(Collectors.toList());		  
+		// return productos.stream().map(p -> new Item(p, 1)).toList(); //Recomendado codeium
 	}
 
 	@Override
 	public Item findById(Long id, Integer cantidad) {
-		// TODO Auto-generated method stub
-		return null;
+		Map<String,String> pathVariable = new HashMap<>();
+		pathVariable.put("id", id.toString());
+		Producto producto = clienteRest.getForObject("http://localhost:8001/listar/{id}", Producto.class, pathVariable);
+		return new Item(producto,cantidad);
 	}
 
 }
 
-
 ```
+
+### 16 [Creando Controlador de Items](https://www.udemy.com/course/microservicios-con-spring-boot-y-spring-cloud/learn/lecture/15372936#questions)
 
 
 
