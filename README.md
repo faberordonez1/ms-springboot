@@ -251,7 +251,103 @@ public class Item {
 
 }
 
+```
+
+### 14 [Creando Service Items y configurando el puerto](https://www.udemy.com/course/microservicios-con-spring-boot-y-spring-cloud/learn/lecture/15372932#questions)
+
+Cofigurando puerto en el aplication.properties
+
+```properties
+spring.application.name=ms-item
+server.port=8002
+```
+
+
+Se  configura  RestTemplate (para acceder a otros ms a traves de rest) que quede registrado como componente de spring, para ello se crea una clase de configuración
+
+ - en el paquete principal se crea una nueva clase [AppConfig o RestTemplateConfig](/ms-item/src/main/java/com/app/item/AppConfig.java)
+ 	- Se anota clase con @Configuration (Permite crear objetos, componentes de spring Bean y se pueden registrar en el contenedor de spring)
+	- Se crea registra el Bean RestTemplate y se le da una nombre @Bean("clienteRest"), este registro nos permite consumir otro ms a traves de rest
+	- Ahora ya se puede injectar el RestTemplate en otra clase
+
+```java
+package com.app.item;
+
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.web.client.RestTemplate;
+
+@Configuration
+public class AppConfig {
+	
+	@Bean("clienteRest")
+	public RestTemplate registarRestTemplate() {
+		return new RestTemplate();
+	}
+
+}
+
 
 ```
+
+
+Se crean 1 nuevo paquete [com.app.item.models.service](/ms-item/src/main/java/com/app/item/model/service/).  
+
+
+* Se crea interface [ItemService](/ms-item/src/main/java/com/app/item/model/service/ItemService.java).  
+
+
+
+```java
+package com.app.item.model.service;
+import java.util.List;
+
+import com.app.item.model.Item;
+
+public interface ItemService {
+	public List<Item> findAll();
+	public Item findById(Long id, Integer cantidad);
+
+}
+```
+
+ - Se crea la clase que implementa la interface anterior [ItemServiceImpl](/ms-item/src/main/java/com/app/item/model/service/ItemServiceImpl.java)
+	 - Se agrega el @Service (Fachada para acceder a los datos)
+ 	 - Se inyecta el RestTemplate con @Autowired
+
+```java
+package com.app.item.model.service;
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
+
+import com.app.item.model.Item;
+
+@Service
+public class ItemServiceImpl implements ItemService {
+	
+	@Autowired
+	private RestTemplate clienteRest;
+
+	@Override
+	public List<Item> findAll() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Item findById(Long id, Integer cantidad) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+}
+
+
+```
+
 
 
