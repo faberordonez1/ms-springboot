@@ -164,6 +164,94 @@ INSERT INTO productos (nombre,precio,create_at) VALUES ('Reebok',300,NOW())
 ```
 ### 13 [Creando MS Items](https://www.udemy.com/course/microservicios-con-spring-boot-y-spring-cloud/learn/lecture/15372928#questions)
 
- - Se crea un nuevo ms
+- Se crea un nuevo [ms item](ms-item) 
+	-	nombre = ms-item 
+ 	- group y package = com.app.item
+	- Se agrega dependencias DevTools y Web
+- Se crean 1 nuevo paquete com.app.item.models
+	- Se crea una clase [Producto](ms-item/src/main/java/com/app/item/model/Producto.java) igual a la creada en ms-productos, para almacenar los datos con la misma estructura
+
+```java
+package com.app.item.model;
+
+import java.util.Date;
+
+public class Producto {
+	
+	private Long id;
+	private String nombre;
+	private Double precio;
+	private Date createAt;
+	public Long getId() {
+		return id;
+	}
+	public void setId(Long id) {
+		this.id = id;
+	}
+	public String getNombre() {
+		return nombre;
+	}
+	public void setNombre(String nombre) {
+		this.nombre = nombre;
+	}
+	public Double getPrecio() {
+		return precio;
+	}
+	public void setPrecio(Double precio) {
+		this.precio = precio;
+	}
+	public Date getCreateAt() {
+		return createAt;
+	}
+	public void setCreateAt(Date createAt) {
+		this.createAt = createAt;
+	}
+}
+```
+- Se crea otra clase [Item](ms-item/src/main/java/com/app/item/model/Item.java) 
+	- Se crean las propiedaes producto y cantidad con sus getter and setter
+	- Se crea un constructor vacio y un constructor con argumentos
+	- Se crea un metodo getTotal()
+
+```java
+package com.app.item.model;
+
+public class Item {
+
+	public Item(Producto producto, Integer cantidad) {
+		this.producto = producto;
+		this.cantidad = cantidad;
+	}
+
+	public Item() {
+	}
+
+	private Producto producto;
+	private Integer cantidad;
+
+	public Producto getProducto() {
+		return producto;
+	}
+
+	public void setProducto(Producto producto) {
+		this.producto = producto;
+	}
+
+	public Integer getCantidad() {
+		return cantidad;
+	}
+
+	public void setCantidad(Integer cantidad) {
+		this.cantidad = cantidad;
+	}
+	
+	public Double getTotal() {
+		return producto.getPrecio()*cantidad.doubleValue();
+	}
+
+}
+
+
+```
 
 
