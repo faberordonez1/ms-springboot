@@ -369,7 +369,60 @@ public class ItemServiceImpl implements ItemService {
 
 ```
 
-### 16 [Creando Controlador de Items](https://www.udemy.com/course/microservicios-con-spring-boot-y-spring-cloud/learn/lecture/15372936#questions)
+### 16 [Creando Controlador del servicio Items](https://www.udemy.com/course/microservicios-con-spring-boot-y-spring-cloud/learn/lecture/15372936#questions)
+
+#### Se crea un nuevo package com.app.item.controllers
+
+* Se crea la clase [ItemController](/ms-item/src/main/java/com/app/item/controllers/ItemController.java)
+* Se agrega el decorador @RestController
+* Se inyecta el ItemService con @Autowired
+* Se implementan los metodos handler del controlador, para listar y consultar por id
+##### Listar 
+* Retorna directamente la lista de items retonrnada por item service
+* Se indica la ruta con @GetMapping("/listar");
+##### Listar por id o detalle
+* Requiere 2 parametros, se reciben como path variable, el id y la cantidad
+* Se envia los 2 parametros (id y cantidad) al service findById
+* Se indica la ruta con @GetMapping("/listar/{id}/cantidad/{cantidad}"), los dos parametros dinámicos van entre llaves
+* Se testea las URL en  postman para validar el connsumo rest a través del ms items
+```
+http://localhost:8002/listar/
+http://localhost:8002/listar/2/cantidad/4
+```
 
 
+```java
+package com.app.item.controllers;
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.app.item.model.Item;
+import com.app.item.model.service.ItemService;
+
+@RestController
+public class ItemController {
+	
+	@Autowired
+	private ItemService itemService;
+	
+	@GetMapping("/listar")
+	public List<Item> llstar (){
+		return itemService.findAll();
+	}
+	
+	@GetMapping("listar/{id}/cantidad/{cantidad}")
+	public Item detalle (@PathVariable Long id,@PathVariable Integer cantidad) {
+		return itemService.findById(id, cantidad);
+	}
+
+}
+
+```
+
+### 17 [Usando Cliente Rest de feign](https://www.udemy.com/course/microservicios-con-spring-boot-y-spring-cloud/learn/lecture/15372936#questions)
 
