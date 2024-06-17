@@ -424,5 +424,134 @@ public class ItemController {
 
 ```
 
-### 17 [Usando Cliente Rest de feign](https://www.udemy.com/course/microservicios-con-spring-boot-y-spring-cloud/learn/lecture/15372936#questions)
+### 17 [Usando Cliente Rest de feign](https://www.udemy.com/course/microservicios-con-spring-boot-y-spring-cloud/learn/lecture/15372942#questions)
+
+Es un Cliente Http, una alternativa a rest template, mas simple y más facil usando interface y anotaciones de forma declarativa.
+
+#### Instalando Dependencia Feign
+Para Implementar Feign, se debe agregar la dependencia feign  
+Clic Derecho en el proyecto > Spring > Edit Starter (add starter)  
+	- Spring Cloud Routing > ✅OpenFiegn y luego boton next  
+	- En el pom.xml deberia aparecer las dependencia
+
+```xml
+		<dependency>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-starter-openfeign</artifactId>
+		</dependency>
+
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>org.springframework.cloud</groupId>
+				<artifactId>spring-cloud-dependencies</artifactId>
+				<version>${spring-cloud.version}</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
+```
+
+#### Habilita feign en la clase principal (@SpringBootApplication)
+En el package principal > com.app.item > MsItemApplication.java
+
+* Se agrega la Anotacion @EnableFeignClients, para habilitar clientes feign del proyecto y nos habilita la injeccion de dependencias en controladores o componentes de spring
+
+```java
+package com.app.item;
+
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.cloud.openfeign.EnableFeignClients;
+
+@EnableFeignClients //habilitar clientes feign del proyecto y nos habilita la injeccion de dependencias en controladores o componentes de spring
+@SpringBootApplication
+public class MsItemApplication {
+
+	public static void main(String[] args) {
+		SpringApplication.run(MsItemApplication.class, args);
+	}
+
+}
+```
+
+#### Configurando clases para usar feign
+
+Crea un nuevo package com.app.item.clientes
+* Se crea una interface [ProductoClienteRest](/ms-item/src/main/java/com/app/item/clientes/ProductoClienteRest.java)
+* Se anota la interface con @FeignClient //Se define que la interface es un cliente feign
+* Se indica el nombre del microservicio (name = "ms-productos")  //Corresponde a spring.application.name=ms-productos del aplication.properties del otro ms
+* Se indica el url del microservicio (... , url = "localhost:8001")
+* Se crea método listar, con el getMapping a la url de listar, tal cual como esta en el controlador del ms de products
+* Se crea el método detalle, con el getMapping a la url de detalle, tal cual como esta en el controlador del ms de products
+
+```java
+package com.app.item.clientes;
+
+import java.util.List;
+
+import org.springframework.cloud.openfeign.FeignClient;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+
+import com.app.item.model.Producto;
+
+//Se define que la interface es un cliente feign con la anotacion.
+@FeignClient(name = "ms-productos", url="localhost:8001")//  Se indica el nombre del microservicio y la url, Corresponde a spring.application.name=ms-productos del aplication.properties del otro ms
+public interface ProductoClienteRest {
+
+	@GetMapping("/listar")
+	public List<Producto> listar();
+	
+	@GetMapping("/listar/{id}")
+	public Producto detalle(@PathVariable Long id);
+}
+
+```
+
+#### Creando Service para implementar ItemService, Alternativa a RestTemplate pero ahora con feign
+
+En el paquete com.app.item.model.service
+
+* Se crea la Clase  [ItemServiceFeignImpl](/ms-item/src/main/java/com/app/item/model/service/ItemServiceFeign.java) y se implementa la interface ItemService
+* Se anota con @Service
+* Se implementas los métodos de la interface
+* Se inyecta clienteFeign CON @Autowired
+##### Genera Error
+
+```java
+package com.app.item.model.service;
+
+import java.util.List;
+import java.util.stream.Collectors;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Primary;
+import org.springframework.stereotype.Service;
+
+import com.app.item.clientes.ProductoClienteRest;
+import com.app.item.model.Item;
+
+@Service
+@Primary
+public class ItemServiceFeign implements ItemService {
+	
+	@Autowired
+	private ProductoClienteRest clienteFeign;
+
+	@Override
+	public List<Item> findAll() {
+		return clienteFeign.listar().stream().map(p -> new Item(p,1)).collect(Collectors.toList());
+	}
+
+	@Override
+	public Item findById(Long id, Integer cantidad) {
+		return new Item (clienteFeign.detalle(id),cantidad);
+	}
+
+
+}
+```
+
 
