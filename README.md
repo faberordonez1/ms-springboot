@@ -518,7 +518,6 @@ En el paquete com.app.item.model.service
 * Se anota con @Service
 * Se implementas los métodos de la interface
 * Se inyecta clienteFeign CON @Autowired
-##### Genera Error
 
 ```java
 package com.app.item.model.service;
@@ -533,8 +532,8 @@ import org.springframework.stereotype.Service;
 import com.app.item.clientes.ProductoClienteRest;
 import com.app.item.model.Item;
 
-@Service
-@Primary
+@Service("serviceFeign")//Una forma de indicar que es la implementacion principal
+@Primary//Otra forma de indicar que es la implementacion principal
 public class ItemServiceFeign implements ItemService {
 	
 	@Autowired
@@ -549,9 +548,28 @@ public class ItemServiceFeign implements ItemService {
 	public Item findById(Long id, Integer cantidad) {
 		return new Item (clienteFeign.detalle(id),cantidad);
 	}
-
-
 }
 ```
 
+#### Indicando cual es la implementacion principal
 
+Se tiene el inconveniente, que hay 2 implementacion de itemService y spring nos sabe cuál inyectar, esto lo  resolvemos de la sigte forma:
+A - En la clase ItemServiceFeign, se le agrega la notación @Primary  
+
+B - Otra alternativa puede ser con @Qualifier,en la indicando la clase (empezando en minusculas) o el identificador de componente al momento de injectar clienteFeign en la clase ItemController
+
+```java
+@Autowired
+	@Qualifier("serviceFeign")//Identificador de implementacion a usar
+	private ItemService itemService;
+```
+
+* Se recomienda agregar el identificador en la clase ItemServiceFeign de forma explicita
+
+```java
+@Service("serviceFeign")
+@Primary
+public class ItemServiceFeign implements ItemService {}
+```
+
+Si se requiere usar la implementacion alterna , se debe agregar la anotacion a la clase y usarla al injectar ItemService
