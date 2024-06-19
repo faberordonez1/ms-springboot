@@ -573,3 +573,41 @@ public class ItemServiceFeign implements ItemService {}
 ```
 
 Si se requiere usar la implementacion alterna , se debe agregar la anotacion a la clase y usarla al injectar ItemService
+
+### 18. [Balanceo de carga del lado del cliente con Ribbon](https://www.udemy.com/course/microservicios-con-spring-boot-y-spring-cloud/learn/lecture/15372950#questions)
+
+Se va a escalar para que el ms de productos, tenga mas instacias y pueda seleccionar la mejor instancia disponible.
+
+En ultimas versiones de springboot,  2.4 o superior para balanceo de carga, spring por defecto es compatible  spring cloud load balancer en lugar de Ribbon (No compatible) . Para usar Ribbon se debe bajar a la 2.3.12  en este caso se baja la versión, pero lo ideal es usar la nueva tecnología
+
+Para hacerlo en el pom.xml del ms items, realizamos lo sigte
+* Cambio version se springboot a 2.3.12.RELEASE
+* Cambio de spring-cloud.version a Hoxton.SR12
+* Se debe agregar la dependencia de spring-cloud-starter-netflix-ribbon
+* Se instalan dependencias de maven
+
+```xml
+<parent>
+		<groupId>org.springframework.boot</groupId>
+		<artifactId>spring-boot-starter-parent</artifactId>
+<!-- Antes <version>3.3.0</version>-->
+			<version>2.3.12.RELEASE</version>
+		<relativePath/> <!-- lookup parent from repository -->
+</parent>
+<groupId>com.app.item</groupId>
+<artifactId>ms-item</artifactId>
+<version>0.0.1-SNAPSHOT</version>
+<name>ms-item</name>
+<description>Demo project for Spring Boot</description>
+<properties>
+	<java.version>17</java.version>
+	<!--Antes <spring-cloud.version>2023.0.2</spring-cloud.version>-->
+	<spring-cloud.version>Hoxton.SR12</spring-cloud.version>
+</properties>
+
+<!-- Nueva Dependencia -->
+		<dependency>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-starter-netflix-ribbon</artifactId>
+		</dependency>
+```
